@@ -2,7 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import { token } from "./credential";
 import { find, getRecipe } from "./webservice";
 
-const bot = new TelegramBot(token, { polling: true });
+const bot: TelegramBot = new TelegramBot(token, { polling: true });
 
 bot.onText(/\/start/, (msg, match) => {
   const chatId = msg.chat.id;
@@ -16,7 +16,7 @@ bot.onText(/\/start/, (msg, match) => {
 
 bot.onText(/\/cari (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, "mohon tunggu Sedang mencari makanan 🍔");
+  bot.sendMessage(chatId, "mohon tunggu! sedang mencari data masakan 🍔");
 
   const food: string = match![1];
   try {
@@ -38,20 +38,16 @@ bot.onText(/\/cari (.+)/, async (msg, match) => {
 
 bot.onText(/\/resep (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, "mohon tunggu Sedang mencari informasi makanan 🍔");
+  bot.sendMessage(chatId, "Mohon Tunggu! sedang memuat resep");
 
   const recipeId: string = match![1];
   try {
     let recipe = await getRecipe(recipeId);
-    await bot.sendMessage(chatId, recipe.title);
-    await bot.sendMessage(
-      chatId,
-      `Bahan Masakan: \n${recipe.ingredements.join("\n")}`
-    );
-    await bot.sendMessage(
-      chatId,
-      `Langkah-langkah memasak: \n${recipe.steps.join("\n")}`
-    );
+    const ingredements: string = recipe.ingredements.map((ingredement: string) => `•${ingredement}`).join("\n")
+    const steps: string = recipe.steps.map((step: string) => `•${step.trim()}`).join("\n")
+    await bot.sendPhoto(chatId, recipe.imageUrl, {caption: 
+      `*${recipe.title}*\n\nBahan-bahan:\n${ingredements}\n\nLangkah-langkah:\n${steps}`
+    , parse_mode: "Markdown"});
   } catch (error) {
     await bot.sendMessage(
       chatId,

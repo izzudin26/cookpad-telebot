@@ -9,6 +9,7 @@ interface food {
 
 interface recipe {
     title: string;
+    imageUrl: string;
     ingredements: string[]
     steps: string[]
 }
