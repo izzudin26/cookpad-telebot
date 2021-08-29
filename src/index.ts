@@ -22,11 +22,11 @@ bot.onText(/\/cari (.+)/, async (msg, match) => {
   try {
     let foods = await find(food);
     foods.forEach((food, i) => {
-        bot.sendPhoto(
-          chatId,
-          food.imageUrl.replace("/128x176cq50", "/680x482cq70"),
-          { caption: `${food.title} \nKode Resep: ${food.recipeId}` }
-        );
+      bot.sendPhoto(
+        chatId,
+        food.imageUrl.replace("/128x176cq50", "/680x482cq70"),
+        { caption: `${food.title} \nKode Resep: ${food.recipeId}` }
+      );
     });
   } catch (error) {
     await bot.sendMessage(
@@ -56,6 +56,21 @@ bot.onText(/\/resep (.+)/, async (msg, match) => {
     await bot.sendMessage(
       chatId,
       "Terjadi kesalahan pengambilan data mohon ulangi perintah"
+    );
+  }
+});
+
+bot.on("message", (msg) => {
+  const chatId = msg.chat.id
+  if (
+    msg.text!.split(" ")[0] != "/cari" &&
+    msg.text!.split(" ")[0] != "/resep" &&
+    msg.text!.split(" ")[0] != "/start"
+  ) {
+    bot.sendMessage(chatId, "Format Perintah salah !");
+    bot.sendMessage(
+      chatId,
+      "Untuk Mencari makanan gunakan perintah /cari nama makanan \nUntuk Mencari resep gunakan perintah /resep kode"
     );
   }
 });
